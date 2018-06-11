@@ -22,32 +22,33 @@ function getRepoContributors(repoOwner, repoName, cb) {
     for(i = 0; i < parsedBody.length; i++) {
       //var avatar_url = res.length[i].avatar_url;
       cb(err, parsedBody[i].avatar_url);
+      downloadImageByURL(parsedBody[i].avatar_url, './avatars/' + parsedBody[i].login + '.png');
     }
   });
 }
 
+function downloadImageByURL (url, filePath) {
+
+  request.get(url)
+  .on('error', function(err) {
+    throw err;
+  })
+  .on('response', function (response) {
+    console.log('Response Status Code: ', response.statusCode);
+    console.log(response.headers['content-type']);
+    console.log('Downloading image...');
+    console.log('Download complete.');
+  })
+  .pipe(fs.createWriteStream(filePath));
+}
+
+
 getRepoContributors("jquery", "jquery", function(err, result) {
   //console.log("Errors:", err);
+  downloadImageByURL("https://avatars2.githubusercontent.com/u/2741?v=3&s=466", "avatars/kvirani.jpg");
   console.log("Results:", result);
   //return result;
 });
-
-
-// function downloadImageByURL (url, filePath) {
-
-//   request.get(url).on('error', function(err) {
-//     throw err;
-//   })
-//   .on('response', function (response) {
-//     console.log('Response Status Code: ', response.statusCode);
-//     console.log(response.headers['content-type']);
-//     console.log('Downloading image...');
-//     console.log('Download complete.');
-//   })
-//   .pipe(fs.createWriteStream(filePath));
-// }
-
-
 
 
 
